@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: server #this can be anything u want it called
+  template:
+    metadata:
+      labels:
+        app: server #must match matchLabels
+    spec:
+      containers:
+        - name: server
+          image: stephengrider/multi-server
+          ports:
+            - containerPort: 5000
+--- #how to create additional kind in a single file
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: server #needs to match the app name on the connecting deployment/app
+  ports:
+    - port: 5000
+      targetPort: 5000
